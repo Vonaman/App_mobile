@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import '../components/custom_button.dart';
 
-class ComparisonPage extends StatelessWidget {
+class ComparisonPage extends StatefulWidget {
   const ComparisonPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Données des deux chaises
-    final chaise1 = {
+  State<ComparisonPage> createState() => _ComparisonPageState();
+}
+
+class _ComparisonPageState extends State<ComparisonPage> {
+  late String selectedChair1;
+  late String selectedChair2;
+
+  final List<Map<String, dynamic>> chaises = [
+    {
+      'id': '1',
       'name': 'Chaise Ergonomique Premium',
       'price': 299,
       'features': [
@@ -18,9 +25,9 @@ class ComparisonPage extends StatelessWidget {
         'Hauteur ajustable (15cm)',
         'Garantie 5 ans',
       ],
-    };
-
-    final chaise2 = {
+    },
+    {
+      'id': '2',
       'name': 'Chaise Gaming XXL',
       'price': 399,
       'features': [
@@ -31,7 +38,63 @@ class ComparisonPage extends StatelessWidget {
         'Repose-pieds rétractable',
         'Support 200 kg',
       ],
-    };
+    },
+    {
+      'id': '3',
+      'name': 'Chaise Bureau Classique',
+      'price': 179,
+      'features': [
+        'Design intemporel',
+        'Dossier rembourré',
+        'Accoudoirs fixes',
+        'Roulettes robustes',
+        'Hauteur ajustable',
+        'Garantie 2 ans',
+      ],
+    },
+    {
+      'id': '4',
+      'name': 'Chaise Design Moderne',
+      'price': 249,
+      'features': [
+        'Esthétique contemporaine',
+        'Assise ergonomique',
+        'Pied en acier inoxydable',
+        'Confortable longue durée',
+        'Facile à nettoyer',
+        'Garantie 3 ans',
+      ],
+    },
+    {
+      'id': '5',
+      'name': 'Chaise Executive Luxe',
+      'price': 499,
+      'features': [
+        'Cuir véritable premium',
+        'Soutien complet du dos',
+        'Accoudoirs rembourrés',
+        'Technologie anti-fatigue',
+        'Inclinaison progressive',
+        'Garantie 7 ans',
+      ],
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedChair1 = '1';
+    selectedChair2 = '2';
+  }
+
+  Map<String, dynamic> getChairById(String id) {
+    return chaises.firstWhere((chair) => chair['id'] == id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final chair1 = getChairById(selectedChair1);
+    final chair2 = getChairById(selectedChair2);
 
     return Scaffold(
       appBar: AppBar(
@@ -60,14 +123,17 @@ class ComparisonPage extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
             children: [
-              // Chaise 1
-              Expanded(child: _buildChairCard(chaise1)),
-              const SizedBox(width: 16),
-              // Chaise 2
-              Expanded(child: _buildChairCard(chaise2)),
+              // Chaise 1 avec sélecteur
+              _buildChairSection(chair1, selectedChair1, (value) {
+                setState(() => selectedChair1 = value!);
+              }),
+              const SizedBox(height: 24),
+              // Chaise 2 avec sélecteur
+              _buildChairSection(chair2, selectedChair2, (value) {
+                setState(() => selectedChair2 = value!);
+              }),
             ],
           ),
         ),
@@ -75,7 +141,11 @@ class ComparisonPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChairCard(Map<String, dynamic> chair) {
+  Widget _buildChairSection(
+    Map<String, dynamic> chair,
+    String selectedId,
+    Function(String?) onChanged,
+  ) {
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -87,6 +157,26 @@ class ComparisonPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Sélecteur de chaise
+            DropdownButton<String>(
+              isExpanded: true,
+              value: selectedId,
+              underline: Container(height: 2, color: Colors.amber[800]),
+              onChanged: onChanged,
+              items: chaises.map<DropdownMenuItem<String>>((chaise) {
+                return DropdownMenuItem<String>(
+                  value: chaise['id'] as String,
+                  child: Text(
+                    chaise['name'] as String,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
             // Icône de chaise
             const Text('🪑', style: TextStyle(fontSize: 50)),
             const SizedBox(height: 12),
