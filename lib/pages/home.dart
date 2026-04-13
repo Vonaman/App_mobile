@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'comparison.dart';
+import '../components/custom_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -18,7 +20,12 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.amber[800],
         centerTitle: true,
-        leading: Icon(Icons.chair, color: Colors.white, size: 28),
+        leading: IconButton(
+          icon: const Icon(Icons.logout, color: Colors.white, size: 28),
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -68,33 +75,16 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 50),
             // Bouton d'entrée
-            ElevatedButton(
+            CustomButton(
+              label: 'Commencer',
               onPressed: () {
-                // Action du bouton
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Bienvenue dans l\'application!'),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ComparisonPage(),
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.amber[800],
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: const Text(
-                'Commencer',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
             ),
           ],
         ),
